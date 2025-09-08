@@ -185,7 +185,7 @@ static rt_err_t _thread_init(struct rt_thread *thread,
                                           (void *)((char *)thread->stack_addr),
                                           (void *)_thread_exit);
 #else
-    thread->sp = (void *)rt_hw_stack_init(thread->entry, thread->parameter,
+    thread->sp = (void *)rt_hw_stack_init(thread->entry, thread->parameter, // 栈指针
                                           (rt_uint8_t *)((char *)thread->stack_addr + thread->stack_size - sizeof(rt_ubase_t)),
                                           (void *)_thread_exit);
 #endif /* ARCH_CPU_STACK_GROWS_UPWARD */
