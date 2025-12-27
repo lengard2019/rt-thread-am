@@ -1,5 +1,10 @@
+MEMORY {
+    FLASH (rx) : ORIGIN = 0x30000000, LENGTH = 0x1000000
+    SDRAM (rwx) : ORIGIN = 0xa0000000, LENGTH = 0x4000000
+}
+
 SECTIONS {
-  .data.extra : {
+  .data.extra : ALIGN(8) {
 
     __fsymtab_start = .;
     KEEP(*(FSymTab))
@@ -26,12 +31,16 @@ SECTIONS {
     *(__am_apps.sdata*)
     __am_apps_data_end = .;
     . = ALIGN(8);
-  }
-}
+  } > SDRAM AT > FLASH
+  
+  _data_extra_start = ADDR(.data.extra);
+  _data_extra_end = _data_extra_start + SIZEOF(.data.extra);
+  _data_extra_load = LOADADDR(.data.extra);
+} 
 INSERT BEFORE .data;
 
 SECTIONS {
-  .bss.extra (NOLOAD) : {
+  .bss.extra (NOLOAD) : ALIGN(8){
     . = ALIGN(8);
     __am_apps_bss_start = .;
     *(__am_apps.bss*)
@@ -39,6 +48,9 @@ SECTIONS {
     *(__am_apps.scommon*)
     __am_apps_bss_end = .;
     . = ALIGN(8);
-  }
-}
+  } > SDRAM
+  _bss_extra_start = ADDR(.bss.extra);
+  _bss_extra_end = _bss_extra_start + SIZEOF(.bss.extra);
+  /* _bss_extra_load = LOADADDR(.bss.extra); */
+} 
 INSERT BEFORE .bss;
